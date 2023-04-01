@@ -1,0 +1,5 @@
+swagger: '2.0'
+info:
+  title: Name Alter API
+  version: 1.0.0
+  description: A simple API to calculate the age of a person based on their name and birth year.
