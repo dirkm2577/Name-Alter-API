@@ -1,14 +1,20 @@
 <template>
   <div>
-    <h1>Benutzerdaten</h1>
-    <form v-on:submit.prevent="sendData">
-      <label for="name">Name:</label>
-      <input type="text" id="name" v-model="name">
-      <label for="birthdate">Geburtsdatum:</label>
-      <input type="date" id="birthdate" v-model="birthdate">
-      <button type="submit">Speichern</button>
-    </form>
-    <table>
+    <div class="banner">
+      <h1>Benutzerdaten</h1>
+      <form v-on:submit.prevent="sendData">
+        <label for="name">Name:</label>
+        <input type="text" id="name" v-model="name">
+        <label for="birthdate">Geburtsdatum:</label>
+        <input type="date" id="birthdate" v-model="birthdate">
+        <button type="submit">Speichern</button>
+      </form>
+      <br />
+    </div>
+    <div v-if="users.length === 0">
+      <p>Keine Nutzer vorhanden.</p>
+    </div>
+    <table v-else>
       <thead>
         <tr>
           <th>Name</th>
@@ -40,18 +46,12 @@ export default {
   methods: {
     async sendData() {
       try {
-        console.log('I have been clicked');
-        const response = await axios.post('http://localhost:5000/users', {
+        const response = await axios.post('http://localhost:5000/age', {
           name: this.name,
           birthdate: this.birthdate
         });
         const user = response.data;
-        const age = this.calculateAge(user.birthdate);
-        this.users.push({
-          name: user.name,
-          age: age,
-        });
-        console.log('I got here');
+        this.users.push(user);
         // clear the form
         this.name = ''
         this.birthdate = ''
@@ -59,16 +59,19 @@ export default {
         console.error(error);
       }
     },
-    calculateAge(birthdate) {
-      const today = new Date()
-      const birth = new Date(birthdate)
-      let age = today.getFullYear() - birth.getFullYear()
-      const month = today.getMonth() - birth.getMonth()
-      if (month < 0 || (month === 0 && today.getDate() < birth.getDate())) {
-        age--
-      }
-      return age
-    }
+     getUsers() {
+      axios.get("http://localhost:5000/age")
+        .then(response => {
+          console.log(response.data);
+          this.users = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+  },
+  created() {
+    this.getUsers();
   }
 }
 </script>
@@ -82,4 +85,88 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+.banner {
+  background-image: url(./assets/Verkehrsmittelmix_1655726497.png);
+  background-size: cover;
+}
+
+form {
+  background-color: #4F9C8F;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 0 auto;
+  width: 50%;
+  font-family: 'FF Fago','Fago','Calibri','Carlito',sans-serif;
+}
+
+input[type="text"], input[type="date"] {
+  background-color: #B8CAC6;
+  border: none;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  border-bottom: 3px solid #4F9C8F;
+  margin-bottom: 20px;
+  width: 90%;
+  padding: 10px;
+  font-size: 16px;
+  border-bottom: 1px solid #095145;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+input[type="text"]:after, input[type="date"]:after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background-color: #4F9C8F;
+  bottom: -3px;
+  left: 0;
+  display: block;
+}
+
+input[type="submit"] {
+  background-color: #4F9C8F;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  border-radius: 25px;
+  font-size: 18px;
+  padding: 10px 25px;
+  background-color: #056e5c;
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+
+table {
+  background-color: #F2F2F2;
+  border-collapse: collapse;
+  border-radius: 5px;
+  margin: 0 auto;
+  width: 50%;
+  font-family: 'FF Fago','Fago','Calibri','Carlito',sans-serif;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  text-align: left;
+  padding: 8px;
+}
+
+th {
+  background-color: #4F9C8F;
+  color: white;
+  font-weight: bold;
+}
+
 </style>
