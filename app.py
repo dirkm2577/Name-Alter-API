@@ -1,28 +1,50 @@
-from datetime import date
+from datetime import datetime
 from flask import Flask, request
-from flask_restful import Resource, Api
+from flask import jsonify
+from flask_restful import reqparse, abort, Api, Resource
+from flask_swagger_ui import get_swaggerui_blueprint
+from flask_cors import CORS
+
+SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
+API_URL = '/static/swagger.yaml'  # Our API url
 
 app = Flask(__name__)
 api = Api(app)
+CORS(app)
+# Call factory function to create our blueprint
+swaggerui_blueprint = get_swaggerui_blueprint(SWAGGER_URL,
+                                              API_URL,
+                                              config={'app_name': "My API"})
+
+# Register blueprint at URL
+
+app.register_blueprint(swaggerui_blueprint) #, url_prefix=SWAGGER_URL)
+
+parser = reqparse.RequestParser()
+parser.add_argument('name', type=str, help='Name of the user', required=True)
+parser.add_argument('birthdate', type=str, help='Birthdate of the user (YYYY-MM-DD)', required=True)
 
 users = []
 
-class User(Resource):
-    def post(self):
-        data = request.get_json()
-        users.append(data)
-        return {'message': 'User created', 'data': data}, 201
+@app.route('/age', methods=['POST'])
+def post_age():
+    args = parser.parse_args()
+    name = args['name']
+    birthdate = datetime.strptime(args['birthdate'], '%Y-%m-%d').date()
+    age = (datetime.now().date() - birthdate).days // 365
 
-    def get(self, name):
-        for user in users:
-            if user['name'] == name:
-                birthdate = date.fromisoformat(user['birthdate'])
-                today = date.today()
-                age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
-                return {'name': name, 'age': age}
-        return {'message': 'User not found'}, 404
+    user = {'name': name, 'birthdate': birthdate, 'age': age}
+    users.append(user)
 
-api.add_resource(User, '/user', '/user/<string:name>')
+    return jsonify(user), 201
+
+
+@app.route('/age', methods=['GET'])
+def get_age_list():
+    age_list = []
+    for user in users:
+        age_list.append({'name': user['name'], 'age': user['age']})
+    return jsonify(age_list)
 
 if __name__ == '__main__':
     app.run(debug=True)

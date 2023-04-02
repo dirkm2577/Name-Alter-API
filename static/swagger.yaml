@@ -1,0 +1,119 @@
+openapi: 3.0.0
+info:
+  title: Age Calculator API
+  description: An API to calculate age based on name and birthdate
+  version: 1.0.0
+
+servers:
+  #- url: http://localhost:8080
+  #  description: Local development server - Frontend
+  - url: http://localhost:5000
+    description: Local development server - Backend
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - name
+        - birthdate
+      properties:
+        name:
+          type: string
+        birthdate:
+          type: string
+          format: date
+        age:
+          $ref: '#/components/schemas/CalculatedAge'
+    CalculatedAge:
+      type: object
+      required:
+        - age
+      properties:
+        age:
+          type: integer
+    UserWithAge:
+      type: object
+      required:
+        - name
+        - age
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+    AllUsersWithAge:
+      type: object
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserWithAge'
+
+paths:
+  /age:
+    post:
+      summary: Endpoint to calculate age based on name and birthdate
+      description: This endpoint calculates age based on name and birthdate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: A JSON object with the calculated age
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculatedAge'
+    get:
+        summary: Returns a list of all users with their names and ages.
+        operationId: listUsers
+        responses:
+          '200':
+            description: List of all users with names and ages.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/AllUsersWithAge'
+  /users/{id}:
+    delete:
+      summary: Endpoint to delete user data
+      description: This endpoint deletes the user data for a user with a given ID
+      parameters:
+        - in: path
+          name: id
+          description: ID of the user to be deleted
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: delete successful
+        '404':
+          description: User with this ID not found
+    put:
+      summary: Endpoint to update user data
+      description: This endpoint updates the data for the user with the given ID
+      parameters:
+        - in: path
+          name: id
+          description: ID of the user to be updated
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Updated successfully
+        '404':
+          description: User with this ID not found
