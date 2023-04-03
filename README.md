@@ -16,10 +16,12 @@ Die Aufgabenstellung war folgende:
 
 Da ich die Anwendung in einem Python Virtual Environment entwickelt habe und keine Produktionsversion, sind folgende Schritte notwendig, um die Anwendung zu starten:
 
-1. Im CLI in den Ordner Name-Alter-API wechseln.
+1. Im CLI in den Ordner 'Name-Alter-API' wechseln.
 2. Mit dem Befehl `source myenv/bin/activate` die virtuelle Umgebung starten
 3. Mit dem Befehl `python app.py` den Flask-Server starten (localhost:5000)
 4. Ein neues Terminal-Fenster öffnen.
 5. Dort auch die virtuelle Umgebung starten mit `source myenv/bin/activate`.
-6. Dann mit dem Befehl `npm run serve` den Web Server starten. (localhost:8080)
-7. Nun in Chrome den localhost:8080 aufrufen, um die Anwendung anzuzeigen.
+6. In den Unterordner 'user-frontend' wechseln.
+7. Dann mit dem Befehl `npm run serve` den Web Server starten. (localhost:8080)
+8. Nun in Chrome den localhost:8080 aufrufen, um die Anwendung anzuzeigen.
+9. Um die virtuelle Umgebung zu verlassen, bitte den Befehl `deactivate`eingeben.
