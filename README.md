@@ -12,6 +12,8 @@ Die Aufgabenstellung war folgende:
 
 *Bitte so umsetzen, wie du es in einem professionellen Umfeld machen würdest, also mit Kommentaren und Berücksichtigung von Naming Conventions und benutzerfreundlicher UI etc.*
 
+### Starten der Anwendung
+
 Da ich die Anwendung in einem Python Virtual Environment entwickelt habe und keine Produktionsversion, sind folgende Schritte notwendig, um die Anwendung zu starten:
 
 1. Im CLI in den Ordner Name-Alter-API wechseln.
