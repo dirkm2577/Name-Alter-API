@@ -44,6 +44,7 @@ export default {
     }
   },
   methods: {
+    // sending input data to the Flask-app backend
     async sendData() {
       try {
         const response = await axios.post('http://localhost:5000/age', {
@@ -59,6 +60,7 @@ export default {
         console.error(error);
       }
     },
+      // getting back all user data for the list
      getUsers() {
       axios.get("http://localhost:5000/age")
         .then(response => {
